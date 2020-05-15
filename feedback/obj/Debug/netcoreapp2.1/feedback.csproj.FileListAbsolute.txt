@@ -1,0 +1,14 @@
+E:\BrStn\feedback\feedback\bin\Debug\netcoreapp2.1\feedback.deps.json
+E:\BrStn\feedback\feedback\bin\Debug\netcoreapp2.1\feedback.runtimeconfig.json
+E:\BrStn\feedback\feedback\bin\Debug\netcoreapp2.1\feedback.runtimeconfig.dev.json
+E:\BrStn\feedback\feedback\bin\Debug\netcoreapp2.1\feedback.dll
+E:\BrStn\feedback\feedback\bin\Debug\netcoreapp2.1\feedback.pdb
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.csprojAssemblyReference.cache
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.csproj.CoreCompileInputs.cache
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.RazorAssemblyInfo.cache
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.RazorAssemblyInfo.cs
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.AssemblyInfoInputs.cache
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.AssemblyInfo.cs
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.RazorTargetAssemblyInfo.cache
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.dll
+E:\BrStn\feedback\feedback\obj\Debug\netcoreapp2.1\feedback.pdb
