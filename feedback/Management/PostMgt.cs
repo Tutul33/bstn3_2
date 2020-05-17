@@ -1,4 +1,5 @@
-﻿using feedback.db;
+﻿using feedback.Common;
+using feedback.db;
 using feedback.Models;
 using feedback.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -99,39 +100,65 @@ namespace feedback.Management
         /// </summary>
         /// <param name="cmnParam"></param>
         /// <returns></returns>
-        //public async Task<object> GetWithPage(int cmnParam)
-        //{
-        //    List<vmFeedback> listUser = null;
-        //    object result = null; int recordsTotal = 0;
-        //    try
-        //    {
-        //        using (_ctx = new FeedBackContext())
-        //        {
+        public async Task<object> GetPostDataWithLinq(vmCommonParam cmnParam)
+        {
+            List<vmPostList> listPost = null;
+            object result = null; int recordsTotal = 0;
+            try
+            {
+                using (_ctx = new FeedBackContext())
+                {
+                    recordsTotal= _ctx.Post.Where(x=>
+                                       !string.IsNullOrEmpty(cmnParam.search) ? x.PostText.Contains(cmnParam.search) : true
+                                       ).Count();
+                    listPost = await (from p in _ctx.Post                                     
+                                      where (
+                                              !string.IsNullOrEmpty(cmnParam.search)?p.PostText.Contains(cmnParam.search):true
+                                            )
+                                      select new vmPostList
+                                      {
+                                         PostId= p.PostId,
+                                         PostText=p.PostText,
+                                         UserId=p.UserId,  
+                                         UserType=(_ctx.User.Where(x=>x.UserId==p.UserId).FirstOrDefault().UserType),
+                                         UserName = (_ctx.User.Where(x => x.UserId == p.UserId).FirstOrDefault().UserName),
+                                         CreationTime =p.CreationTime,
+                                         RecordsTotal=recordsTotal,
+                                         CommentList=(
+                                             from c in _ctx.Comment
+                                             join c_u in _ctx.User on c.UserId equals c_u.UserId
+                                             where c.PostId==p.PostId
+                                             select new CommentList
+                                             {
+                                                 PostId=c.PostId,
+                                                 CommentId=c.CommentId,
+                                                 CommentText=c.CommentText,
+                                                 CreationTime=c.CreationTime,
+                                                 CLike=c.CLike==null?0:c.CLike,
+                                                 CDislike=c.CDislike==null?0:c.CDislike,
+                                                 UserId=c.UserId,
+                                                 UserName=c_u.UserName,
+                                                 UserType=c_u.UserType
+                                             }
+                                         ).ToList()
 
-        //            listUser = await (from u in _ctx.User
-        //                              join p in _ctx.Post on u.UserId equals p.UserId
-        //                              join c in _ctx.Comment on p.PostId equals c.PostId
-        //                              //where u.UserRoleId != StaticInfos.SeedRoleID
-        //                              select new vmFeedback
-        //                              {
-        //                                  UserId = u.UserId,
-        //                                  PostId= p.PostId
 
-        //                              }).ToListAsync();
+                                      }
+                    ).OrderByDescending(x => x.PostId).Skip(CommonMethod.Skip(cmnParam)).Take((int)cmnParam.pageSize).ToListAsync();
 
 
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //    }
+            }
 
-        //    return result = new
-        //    {
-        //        listUser,
-        //        recordsTotal
-        //    };
-        //}
+            return result = new
+            {
+                listPost,
+                recordsTotal
+            };
+        }
     }
 }

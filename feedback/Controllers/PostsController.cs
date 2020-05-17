@@ -49,7 +49,7 @@ namespace feedback.Controllers
             };
         }
         [HttpGet("[action]")]
-        public async Task<object> getpostdata([FromQuery] string param )//string pageNumber,string pageSize,string search)//[FromQuery] string param
+        public async Task<object> getPostDataUsingSP([FromQuery] string param )//string pageNumber,string pageSize,string search)//[FromQuery] string param
         {
             object result = null; object resdata = null;
             try
@@ -58,6 +58,26 @@ namespace feedback.Controllers
                 vmCommonParam cmnParam = JsonConvert.DeserializeObject<vmCommonParam>(data[0].ToString());
                 
                 resdata = await _manager.GetPostData(cmnParam);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+            return result = new
+            {
+                resdata
+            };
+        }
+        [HttpGet("[action]")]
+        public async Task<object> getPostDataUsingLinq([FromQuery] string param)//string pageNumber,string pageSize,string search)//[FromQuery] string param
+        {
+            object result = null; object resdata = null;
+            try
+            {
+                dynamic data = JsonConvert.DeserializeObject(param);
+                vmCommonParam cmnParam = JsonConvert.DeserializeObject<vmCommonParam>(data[0].ToString());
+
+                resdata = await _manager.GetPostDataWithLinq(cmnParam);
             }
             catch (Exception ex)
             {
