@@ -81,6 +81,7 @@ namespace feedback.Management
                    { "pageNumber", cmnParam.pageNumber },
                    { "pageSize", cmnParam.pageSize },
                    { "search", cmnParam.search },
+                   { "LogedUserId", cmnParam.UserId },
                 };
 
                 listPost = await Generic_vmPost.ExecuteCommandString(dataUtilities.SpGetPostData, ht, dataUtilities.conString.ToString());
@@ -111,34 +112,35 @@ namespace feedback.Management
                     recordsTotal= _ctx.Post.Where(x=>
                                        !string.IsNullOrEmpty(cmnParam.search) ? x.PostText.Contains(cmnParam.search) : true
                                        ).Count();
-                    listPost = await (from p in _ctx.Post                                     
+                    listPost = await (from p in _ctx.Post
                                       where (
-                                              !string.IsNullOrEmpty(cmnParam.search)?p.PostText.Contains(cmnParam.search):true
+                                              !string.IsNullOrEmpty(cmnParam.search) ? p.PostText.Contains(cmnParam.search) : true
                                             )
                                       select new vmPostList
                                       {
-                                         PostId= p.PostId,
-                                         PostText=p.PostText,
-                                         UserId=p.UserId,  
-                                         UserType=(_ctx.User.Where(x=>x.UserId==p.UserId).FirstOrDefault().UserType),
-                                         UserName = (_ctx.User.Where(x => x.UserId == p.UserId).FirstOrDefault().UserName),
-                                         CreationTime =p.CreationTime,
-                                         RecordsTotal=recordsTotal,
-                                         CommentList=(
+                                          PostId = p.PostId,
+                                          PostText = p.PostText,
+                                          UserId = p.UserId,
+                                          UserType = (_ctx.User.Where(x => x.UserId == p.UserId).FirstOrDefault().UserType),
+                                          UserName = (_ctx.User.Where(x => x.UserId == p.UserId).FirstOrDefault().UserName),
+                                          CreationTime = p.CreationTime,
+                                          RecordsTotal = recordsTotal,
+                                          CommentList = (
                                              from c in _ctx.Comment
                                              join c_u in _ctx.User on c.UserId equals c_u.UserId
-                                             where c.PostId==p.PostId
+                                             where c.PostId == p.PostId
                                              select new CommentList
                                              {
-                                                 PostId=c.PostId,
-                                                 CommentId=c.CommentId,
-                                                 CommentText=c.CommentText,
-                                                 CreationTime=c.CreationTime,
-                                                 CLike=c.CLike==null?0:c.CLike,
-                                                 CDislike=c.CDislike==null?0:c.CDislike,
-                                                 UserId=c.UserId,
-                                                 UserName=c_u.UserName,
-                                                 UserType=c_u.UserType
+                                                 PostId = c.PostId,
+                                                 CommentId = c.CommentId,
+                                                 CommentText = c.CommentText,
+                                                 CreationTime = c.CreationTime,
+                                                 CLike = c.CLike == null ? 0 : c.CLike,
+                                                 CDislike = c.CDislike == null ? 0 : c.CDislike,
+                                                 UserId = c.UserId,
+                                                 UserName = c_u.UserName,
+                                                 UserType = c_u.UserType,
+                                                 IsLikedByLoggedUser = (_ctx.OpinionLog.Where(x => x.UserId == cmnParam.UserId && x.CommentId==c.CommentId).FirstOrDefault() != null) ? (_ctx.OpinionLog.Where(x => x.UserId == cmnParam.UserId && x.CommentId == c.CommentId).FirstOrDefault().IsLike) : null
                                              }
                                          ).ToList()
 

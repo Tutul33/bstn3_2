@@ -77,9 +77,15 @@ namespace feedback.Management
                         if (model.id > 0)
                         {
                             var objComment = await _ctx.Comment.FirstOrDefaultAsync(x => x.CommentId == model.id);
-                            var objOpinionLog = await _ctx.OpinionLog.FirstOrDefaultAsync(x => x.CommentId == model.id && x.UserId ==model.UserId);
+                            var objOpinionLog = await _ctx.OpinionLog.FirstOrDefaultAsync(x => x.CommentId == model.id && x.UserId == model.UserId);
                             if (objOpinionLog != null)
-                            {
+                            { 
+                                if (objOpinionLog.IsLike != model.opinion)
+                                {
+                                    objComment.CDislike = !model.opinion ? (Convert.ToInt32(objComment.CDislike) + 1) : (objComment.CDislike > 0 ? (Convert.ToInt32(objComment.CDislike) - 1) : 0);
+
+                                    objComment.CLike = model.opinion ? (Convert.ToInt32(objComment.CLike) + 1) : (objComment.CLike > 0 ? (Convert.ToInt32(objComment.CLike) - 1) : 0);
+                                }
                                 objOpinionLog.IsLike = model.opinion;
                             }
                             else
@@ -92,73 +98,12 @@ namespace feedback.Management
                                 {
                                     await _ctx.OpinionLog.AddAsync(opinionLog);
                                 }
+                                objComment.CDislike = !model.opinion ? (Convert.ToInt32(objComment.CDislike) + 1) : Convert.ToInt32(objComment.CDislike);
+                                objComment.CLike = model.opinion ? (Convert.ToInt32(objComment.CLike) + 1) : Convert.ToInt32(objComment.CLike);
                             }
-                            if (model.opinion)
-                            {
-                               
-                                if (objOpinionLog != null)
-                                {
-                                    if ((bool)objOpinionLog.IsLike)
-                                    {
-                                        if(objComment.CDislike!=null)
-                                            objComment.CDislike -= 1;
-                                        if (objComment.CLike != null)
-                                            objComment.CLike += 1;
-                                        else
-                                            objComment.CLike = 1;
-                                    }
-                                    else 
-                                    {
-                                        if (objComment.CLike != null)
-                                            objComment.CLike += 1;
-                                        else
-                                            objComment.CLike = 1;
-                                    }
 
-                                }
-                                else
-                                {
-                                    if (objComment.CLike != null)
-                                        objComment.CLike += 1;
-                                    else
-                                        objComment.CLike = 1;
-                                }
-                            }
-                            else
-                            {
-                                
-                                if (objOpinionLog != null)
-                                {
-                                    if (!(bool)objOpinionLog.IsLike)
-                                    {
-                                        if (objComment.CLike != null)
-                                            objComment.CLike -= 1;
-                                        if (objComment.CDislike != null)
-                                            objComment.CDislike += 1;
-                                        else
-                                            objComment.CDislike = 1;
-                                    }
-                                    else
-                                    {
-                                        if (objComment.CDislike != null)
-                                            objComment.CDislike += 1;
-                                        else
-                                            objComment.CDislike = 1;
-                                    }
-                                        
-                                }
-                                else
-                                {
-                                    
-                                    if (objComment.CDislike != null)
-                                        objComment.CDislike += 1;
-                                    else
-                                        objComment.CDislike = 1;
-                                }
-                               
-                            }
                         }
-                     
+
 
                         await _ctx.SaveChangesAsync();
 

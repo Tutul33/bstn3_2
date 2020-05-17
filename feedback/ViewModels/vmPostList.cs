@@ -61,5 +61,9 @@ namespace feedback.ViewModels
 
         [JsonProperty("userType")]
         public string UserType { get; set; }
+
+        [JsonProperty("isLikedByLoggedUser")]
+        public bool? IsLikedByLoggedUser { get; set; }
+
     }
 }
