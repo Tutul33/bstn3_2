@@ -27,11 +27,7 @@ namespace feedback.Controllers
             _manager = new PostMgt();
         }
         #endregion
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        
         // POST: api/users/saveupdate
         [HttpPost("[action]")]
         public async Task<object> createPost([FromBody]object[] data)
