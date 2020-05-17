@@ -35,8 +35,6 @@ namespace feedback.Management
                             objUser.UserType = model.UserType;
                             objUser.Password = model.Password;
 
-
-
                             if (objUser != null)
                             {
                                 await _ctx.User.AddAsync(objUser);
